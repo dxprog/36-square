@@ -23,17 +23,21 @@ function handleClientMessage(sender, data) {
 }
 
 function handleMessage(msg) {
+  let data;
+
   try {
-    const data = JSON.parse(msg.utf8Data);
-    if (data.sender === 'client') {
-      handleClientMessage(this, data.data);
-    } else if (data.sender === 'board') {
-      handleBoardMessage(this, data.data);
-    } else {
-      console.error(`Received message from unknown sender: ${data.sender}`);
-    }
+    data = JSON.parse(msg.utf8Data);
   } catch (exc) {
-    console.error(`Invalid message: ${message}`);
+    console.error(`Invalid message: ${JSON.stringify(msg)}`);
+    return;
+  }
+
+  if (data.sender === 'client') {
+    handleClientMessage(this, data.data);
+  } else if (data.sender === 'board') {
+    handleBoardMessage(this, data.data);
+  } else {
+    console.error(`Received message from unknown sender: ${data.sender}`);
   }
 }
 

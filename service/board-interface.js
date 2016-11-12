@@ -2,6 +2,7 @@ let board = null;
 
 function registerBoard(sender) {
   board = sender;
+  console.log('New board registered');
 }
 
 module.exports = {
