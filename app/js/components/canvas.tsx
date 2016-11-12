@@ -58,7 +58,7 @@ export default class Canvas extends React.Component<CanvasProps, {}> {
     return <canvas ref="canvas" width={width} height={height} onClick={this.handleCanvasClick.bind(this)} />;
   }
 
-  componentDidMount() {
+  protected componentDidMount() {
     this.canvas = this.refs.canvas;
     this.widthPerCol = this.canvas.width / this.props.cols;
     this.heightPerRow = this.canvas.height / this.props.rows;
@@ -69,7 +69,7 @@ export default class Canvas extends React.Component<CanvasProps, {}> {
    *  EVENT HANDLERS
    ******************************/
 
-  handleCanvasClick(evt: MouseEvent) {
+  private handleCanvasClick(evt: MouseEvent) {
     const { onClick } = this.props;
 
     if (onClick) {

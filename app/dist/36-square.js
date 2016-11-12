@@ -45,26 +45,46 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var React = __webpack_require__(3);
-	var ReactDOM = __webpack_require__(1);
-	var canvas_1 = __webpack_require__(2);
+	var React = __webpack_require__(1);
+	var ReactDOM = __webpack_require__(2);
+	var canvas_1 = __webpack_require__(3);
+	var socket_1 = __webpack_require__(4);
 	var body = document.getElementById('body');
+	var BOARD_COLS = 6;
+	var BOARD_ROWS = 6;
+	var pixelData = new Uint32Array(BOARD_COLS * BOARD_ROWS);
 	var canvas;
-	function handleCanvasClicked(coords) {
-	    console.log(coords.x, coords.y);
-	    canvas.setPixel(coords.x, coords.y, 0xffffff);
+	function handleSocketOpen() {
+	    console.log('socket is open');
 	}
-	ReactDOM.render(React.createElement(canvas_1.default, {ref: function (obj) { return canvas = obj; }, rows: 6, cols: 6, tileSize: 100, onClick: handleCanvasClicked}), body);
+	function handleCanvasClicked(coords) {
+	    var color = 0xffffff;
+	    canvas.setPixel(coords.x, coords.y, color);
+	    socket.sendData({
+	        x: coords.x,
+	        y: coords.y,
+	        color: color
+	    });
+	}
+	var socket = new socket_1.default('ws://debian-server', 8888);
+	socket.on('open', handleSocketOpen);
+	ReactDOM.render(React.createElement(canvas_1.default, {ref: function (obj) { return canvas = obj; }, cols: BOARD_COLS, rows: BOARD_ROWS, tileSize: 100, onClick: handleCanvasClicked}), body);
 
 
 /***/ },
 /* 1 */
 /***/ function(module, exports) {
 
-	module.exports = ReactDOM;
+	module.exports = React;
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	module.exports = ReactDOM;
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -73,7 +93,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var React = __webpack_require__(3);
+	var React = __webpack_require__(1);
 	function padNum(str, len) {
 	    while (str.length < len) {
 	        str = '0' + str;
@@ -148,10 +168,72 @@
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
-	module.exports = React;
+	"use strict";
+	var EVT_OPEN = 'open';
+	var EVT_ERROR = 'error';
+	var EVT_MESSAGE = 'message';
+	var Socket = (function () {
+	    /*******************************
+	     *  LIFECYCLE METHODS
+	     ******************************/
+	    function Socket(url, port) {
+	        if (port === void 0) { port = 80; }
+	        this.events = {};
+	        var connection = new WebSocket(url + ":" + port, '36-square');
+	        connection.addEventListener(EVT_OPEN, this.handleOpen.bind(this));
+	        connection.addEventListener(EVT_MESSAGE, this.handleMessage.bind(this));
+	        connection.addEventListener(EVT_ERROR, this.handleError.bind(this));
+	        this.connection = connection;
+	    }
+	    /*******************************
+	     *  EVENT HANDLERS
+	     ******************************/
+	    Socket.prototype.handleOpen = function () {
+	        this.trigger(EVT_OPEN);
+	    };
+	    Socket.prototype.handleMessage = function (evt) {
+	        this.trigger(EVT_MESSAGE, evt);
+	    };
+	    Socket.prototype.handleError = function (err) {
+	        this.trigger(EVT_ERROR, err);
+	    };
+	    /*******************************
+	     *  PUBLIC METHODS
+	     ******************************/
+	    Socket.prototype.sendData = function (data) {
+	        this.connection.send(JSON.stringify({
+	            sender: 'client',
+	            data: data
+	        }));
+	    };
+	    Socket.prototype.on = function (eventName, callback) {
+	        if (!this.events[eventName]) {
+	            this.events[eventName] = [];
+	        }
+	        this.events[eventName].push(callback);
+	    };
+	    /*******************************
+	     *  PRIVATE METHODS
+	     ******************************/
+	    Socket.prototype.trigger = function (eventName) {
+	        var args = [];
+	        for (var _i = 1; _i < arguments.length; _i++) {
+	            args[_i - 1] = arguments[_i];
+	        }
+	        if (this.events[eventName]) {
+	            this.events[eventName].forEach(function (callback) {
+	                callback.apply(void 0, args);
+	            });
+	        }
+	    };
+	    return Socket;
+	}());
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Socket;
+
 
 /***/ }
 /******/ ]);
