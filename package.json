@@ -1,0 +1,14 @@
+{
+  "name": "36-square",
+  "version": "0.0.1",
+  "description": "All code for the 36-LED square",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matt Hackmann",
+  "license": "WTFPL",
+  "dependencies": {
+    "rpi-ws281x-native": "^0.8.1"
+  }
+}
