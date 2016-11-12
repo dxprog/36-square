@@ -4,11 +4,21 @@
   "description": "All code for the 36-LED square",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch"
   },
   "author": "Matt Hackmann",
   "license": "WTFPL",
   "dependencies": {
     "rpi-ws281x-native": "^0.8.1"
+  },
+  "devDependencies": {
+    "@types/react": "^0.14.47",
+    "@types/react-dom": "^0.14.18",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "source-map-loader": "^0.1.5",
+    "ts-loader": "^1.2.0",
+    "webpack": "^1.13.3"
   }
 }
