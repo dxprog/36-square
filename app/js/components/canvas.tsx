@@ -1,17 +1,12 @@
 import * as React from 'react';
 
+import { padNum } from '../util';
+
 interface CanvasProps {
   cols: number;
   rows: number;
   tileSize: number;
   onClick?: Function;
-}
-
-function padNum(str: string, len: number): string {
-  while (str.length < len) {
-    str = '0' + str;
-  }
-  return str;
 }
 
 export default class Canvas extends React.Component<CanvasProps, {}> {
