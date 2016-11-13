@@ -16,6 +16,7 @@ const PIXEL_REMAP = (new Uint16Array(NUM_LEDS)).map((value, index) => {
 
 strand.init(NUM_LEDS);
 strand.setIndexMapping(PIXEL_REMAP);
+render();
 
 // ---- trap the SIGINT and reset before exit
 process.on('SIGINT', () => {
@@ -29,7 +30,11 @@ function setPixel(x, y, color) {
 }
 
 function render() {
-  strand.render(pixelData);
+  // Give a copy of the pixel data. There must be
+  // some bad memory management happening down
+  // the line, because changing this data just
+  // causes wierd mayhem and this seems to prevent that.
+  strand.render(pixelData.map(value => value));
 }
 
 function handleError(err) {
@@ -77,7 +82,5 @@ client.on('connect', connection => {
 client.on('connectFailed', err => {
   console.error(err);
 });
-
-setInterval(render, 100);
 
 client.connect('ws://debian-server:8888/', '36-square', 'dev.dxprog.com');
