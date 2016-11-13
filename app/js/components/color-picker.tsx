@@ -8,10 +8,22 @@ interface ColorPickerProps {
 
 export default class ColorPicker extends React.Component<ColorPickerProps, {}> {
   private colors: Array<Number> = [
-    0xffffff,
+    0x800000,
     0xff0000,
+    0xff8000,
+    0xffff00,
+    0x80ff00,
+    0x008000,
     0x00ff00,
+    0x00ff80,
+    0x00ffff,
+    0x0080ff,
+    0x000080,
     0x0000ff,
+    0x8000ff,
+    0xff00ff,
+    0xff0080,
+    0xffffff,
     0x000000
   ];
 
@@ -21,7 +33,7 @@ export default class ColorPicker extends React.Component<ColorPickerProps, {}> {
 
   render() {
     return (
-      <ul>
+      <ul className="color-picker">
         {this.colors.map((color, index) => {
           const style = {
             'background-color': `#${padNum(color.toString(16), 6)}`
